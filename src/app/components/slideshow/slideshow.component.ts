@@ -9,16 +9,22 @@ import { Movie } from '../../interfaces/nowplaying-response';
 })
 export class SlideshowComponent implements OnInit, AfterViewInit {
   @Input() movies: Movie[];
+  public mySwiper: Swiper;
   urlBase: string = 'https://image.tmdb.org/t/p/w500';
 
   constructor() {}
   ngAfterViewInit(): void {
-    const mySwiper = new Swiper('.swiper-container', {
+    this.mySwiper = new Swiper('.swiper-container', {
       loop: true,
     });
   }
 
-  ngOnInit(): void {
-    console.log(this.movies);
+  ngOnInit(): void {}
+
+  slideNext() {
+    this.mySwiper.slideNext();
+  }
+  slidePrev() {
+    this.mySwiper.slidePrev();
   }
 }
