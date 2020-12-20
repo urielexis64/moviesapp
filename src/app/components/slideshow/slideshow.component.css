@@ -3,6 +3,14 @@
   width: 100%;
 }
 
+.swiper-slide {
+  cursor: grab;
+}
+
+.swiper-slide:active {
+  cursor: grabbing;
+}
+
 .swiper-button-prev,
 .swiper-button-next {
   color: white;

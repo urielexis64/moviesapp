@@ -10,7 +10,7 @@ import { Movie } from '../../interfaces/nowplaying-response';
 export class SlideshowComponent implements OnInit, AfterViewInit {
   @Input() movies: Movie[];
   public mySwiper: Swiper;
-  urlBase: string = 'https://image.tmdb.org/t/p/w500';
+  urlBase: string = 'https://image.tmdb.org/t/p/original';
 
   constructor() {}
   ngAfterViewInit(): void {
