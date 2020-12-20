@@ -1,1 +1,17 @@
-<p>search works!</p>
+<h1><strong>Search:</strong> {{ currentSearch }}</h1>
+<hr />
+
+<div class="row text-center text-light" *ngIf="loading">
+  <div class="col">
+    <i class="fa fa-spinner fa-spin fa-5x"></i>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <app-poster-grid-movies
+      *ngIf="movies.length !== 0"
+      [movies]="movies"
+    ></app-poster-grid-movies>
+  </div>
+</div>
