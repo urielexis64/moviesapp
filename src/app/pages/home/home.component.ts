@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Movie } from 'src/app/interfaces/nowplaying-response';
 import { MoviesService } from '../../services/movies.service';
 
@@ -7,7 +7,7 @@ import { MoviesService } from '../../services/movies.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   movies: Movie[] = [];
   moviesSlideshow: Movie[] = [];
 
@@ -17,20 +17,24 @@ export class HomeComponent implements OnInit {
       (document.documentElement.scrollTop || document.body.scrollTop) + 1000;
     const max =
       document.documentElement.scrollHeight || document.body.scrollHeight;
-    console.log({ pos, max });
     if (pos >= max) {
-      this.moviesService.getNowPlaying().subscribe((response) => {
-        this.movies.push(...response.results);
-      });
+      if (!this.moviesService.loading) {
+        this.moviesService.getNowPlaying().subscribe((movies) => {
+          this.movies.push(...movies);
+        });
+      }
     }
   }
 
   constructor(private moviesService: MoviesService) {}
 
   ngOnInit(): void {
-    this.moviesService.getNowPlaying().subscribe((response) => {
-      this.movies = response.results;
-      this.moviesSlideshow = response.results.slice(0, 10);
+    this.moviesService.getNowPlaying().subscribe((movies) => {
+      this.movies = movies;
+      this.moviesSlideshow = movies.slice(0, 10);
     });
+  }
+  ngOnDestroy(): void {
+    this.moviesService.resetPage();
   }
 }
