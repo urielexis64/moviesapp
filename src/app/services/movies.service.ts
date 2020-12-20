@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { NowPlayingResponse } from '../interfaces/nowplaying-response';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { Movie, NowPlayingResponse } from '../interfaces/nowplaying-response';
+import { tap, map } from 'rxjs/operators';
+import { MovieDetails } from '../interfaces/movies-details';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,8 @@ import { tap } from 'rxjs/operators';
 export class MoviesService {
   private urlBase = 'https://api.themoviedb.org/3';
   private page: number = 1;
+  public loading: boolean = false;
+
   constructor(private http: HttpClient) {}
 
   get params() {
@@ -20,15 +23,41 @@ export class MoviesService {
     };
   }
 
-  getNowPlaying(): Observable<NowPlayingResponse> {
+  resetPage() {
+    this.page = 1;
+  }
+
+  getNowPlaying(): Observable<Movie[]> {
+    if (this.loading) return of([]);
+
+    this.loading = true;
+
     return this.http
       .get<NowPlayingResponse>(`${this.urlBase}/movie/now_playing`, {
         params: this.params,
       })
       .pipe(
+        map((response) => response.results),
         tap(() => {
           this.page++;
+          this.loading = false;
         })
       );
+  }
+
+  searchMovies(text: string): Observable<Movie[]> {
+    const params = { ...this.params, page: '1', query: text };
+
+    return this.http
+      .get<NowPlayingResponse>(`${this.urlBase}/search/movie`, {
+        params,
+      })
+      .pipe(map((response) => response.results));
+  }
+
+  getMovieDetail(id: string) {
+    return this.http.get<MovieDetails>(`${this.urlBase}/movie/${id}`, {
+      params: this.params,
+    });
   }
 }
