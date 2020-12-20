@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Movie } from 'src/app/interfaces/nowplaying-response';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-poster-grid-movies',
@@ -8,11 +9,14 @@ import { Movie } from 'src/app/interfaces/nowplaying-response';
 })
 export class PosterGridMoviesComponent implements OnInit {
   @Input() movies: Movie[];
-  math = Math;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     console.log(this.movies);
+  }
+
+  showMovie(id: string) {
+    this.router.navigate(['/movie', id]);
   }
 }
