@@ -4,6 +4,7 @@ import { MoviesService } from '../../services/movies.service';
 import { MovieDetails } from '../../interfaces/movies-details';
 import { Location } from '@angular/common';
 import { Cast } from '../../interfaces/cast-response';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-movie',
@@ -23,7 +24,20 @@ export class MovieComponent implements OnInit {
 
   ngOnInit(): void {
     const { id } = this.activatedRoute.snapshot.params;
-    this.moviesService.getMovieDetail(id).subscribe((movie) => {
+    //multiple observables
+    combineLatest([
+      this.moviesService.getMovieDetail(id),
+      this.moviesService.getCast(id),
+    ]).subscribe(([movie, cast]) => {
+      if (movie) {
+        this.movie = movie;
+        this.cast = cast;
+      } else {
+        this.router.navigateByUrl('/home');
+      }
+    });
+
+    /* this.moviesService.getMovieDetail(id).subscribe((movie) => {
       if (movie) {
         this.movie = movie;
       } else {
@@ -33,7 +47,7 @@ export class MovieComponent implements OnInit {
 
     this.moviesService.getCast(id).subscribe((cast) => {
       this.cast = cast;
-    });
+    }); */
   }
 
   onBack() {
