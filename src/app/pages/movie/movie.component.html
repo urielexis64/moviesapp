@@ -1,1 +1,46 @@
-<h1>{{ id }}</h1>
+<div class="row" *ngIf="movie">
+  <div class="col-md-6">
+    <img
+      class="img-thumbnail"
+      [src]="movie.poster_path | poster"
+      [alt]="movie.title"
+    />
+  </div>
+  <div class="col-md-6">
+    <h3>{{ movie.title }}</h3>
+    <div class="row">
+      <div class="col">
+        <star-rating
+          [value]="movie.vote_average"
+          totalstars="10"
+          checkedcolor="yellow"
+          uncheckedcolor="gray"
+          size="14px"
+          readonly="false"
+        ></star-rating>
+      </div>
+      <div class="col text-light">
+        {{ movie.vote_average | number: "1.1-2" }}
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div
+        class="col text-light"
+        [style.font-style]="movie.overview ? 'normal' : 'italic'"
+      >
+        {{ movie.overview || "No overview." }}
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col">
+        <button (click)="onBack()" class="btn btn-outline-danger">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5 mb-5" *ngIf="cast.length > 0">
+  <div class="col">
+    <app-cast-slideshow [cast]="cast"></app-cast-slideshow>
+  </div>
+</div>
